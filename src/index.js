@@ -30,6 +30,41 @@ api.use(bodyParser.json());
 
 // POST
 
+// createnew user
+api.post('/newUser', (req, res, next) => {
+    // data from JSON
+    var name = req.body.name;
+    var emai = req.body.email;
+    var password = req.body.password;
+
+    // connect db
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.log('ERROR connecting to DB: ', config.database);
+        }
+
+        // query to insert into db
+        var newUserQueryString =
+            'INSERT INTO users (name, email, password) VALUES (?,?,?)';
+
+        // db query
+        connection.query(
+            newUserQueryString,
+            [name, email, password],
+            (error, results, fields) => {
+                if (error) {
+                    throw error;
+                }
+
+                // return success
+                res.json({ msg: 'user added' });
+            }
+        );
+        // disconnect db
+        connection.release();
+    });
+});
+
 // GET
 
 // GET endpoint to sennd response to web client
