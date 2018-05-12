@@ -66,6 +66,27 @@ api.post('/newUser', (req, res, next) => {
 });
 
 // GET
+api.get('/getUsers', (req, res) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.log('ERROR connecting to DB: ', config.database);
+        }
+
+        // query string for getting users
+        var selectQuery = 'SELECT * FROM users';
+
+        // connect to db
+        connection.query(selectQuery, (error, results, fields) => {
+            if (error) {
+                throw error;
+            }
+
+            //return users
+            res.json(results);
+        });
+        connection.release();
+    });
+});
 
 // GET endpoint to sennd response to web client
 api.get('/', (req, res) => {
